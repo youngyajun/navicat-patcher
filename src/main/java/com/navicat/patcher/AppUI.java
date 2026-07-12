@@ -113,7 +113,7 @@ public class AppUI extends Application {
         // 设置窗口图标
         try {
             primaryStage.getIcons().add(
-                    new javafx.scene.image.Image(getClass().getResourceAsStream("/icon.png")));
+                    new javafx.scene.image.Image(getClass().getResourceAsStream("/icon.ico")));
         } catch (Exception e) {
             log("无法加载图标: " + e.getMessage());
         }
