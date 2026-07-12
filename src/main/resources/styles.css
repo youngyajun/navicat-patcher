@@ -1,0 +1,124 @@
+/* ═══ Navicat Patcher - 深色主题 CSS ═══ */
+
+.root {
+    -fx-base: #1e1e2e;
+    -fx-background: #1e1e2e;
+    -fx-control-inner-background: #2a2a3c;
+    -fx-text-background: #e0e0e0;
+    -fx-accent: #7c6cf0;
+    -fx-focus-color: #7c6cf0;
+    -fx-faint-focus-color: transparent;
+}
+
+/* ── 标签 ── */
+.label {
+    -fx-text-fill: #e0e0e0;
+}
+
+/* ── 文本框 ── */
+.text-field {
+    -fx-control-inner-background: #333346;
+    -fx-text-fill: #e0e0e0;
+    -fx-prompt-text-fill: #666680;
+    -fx-background-radius: 4;
+    -fx-border-color: #444460;
+    -fx-border-radius: 4;
+    -fx-border-width: 1;
+}
+
+.text-field:focused {
+    -fx-border-color: #7c6cf0;
+}
+
+.text-area {
+    -fx-control-inner-background: #333346;
+    -fx-text-fill: #e0e0e0;
+    -fx-prompt-text-fill: #666680;
+    -fx-background-radius: 4;
+    -fx-border-color: #444460;
+    -fx-border-radius: 4;
+    -fx-border-width: 1;
+}
+
+.text-area:focused {
+    -fx-border-color: #7c6cf0;
+}
+
+/* ── 按钮 ── */
+.button {
+    -fx-background-color: #5b4fc7;
+    -fx-text-fill: #ffffff;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-padding: 6 16;
+    -fx-font-weight: normal;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #7c6cf0;
+}
+
+.button:pressed {
+    -fx-background-color: #4a3fa8;
+}
+
+.button:disabled {
+    -fx-background-color: #3a3a4c;
+    -fx-text-fill: #666680;
+    -fx-cursor: default;
+}
+
+/* ── TitledPane ── */
+.titled-pane {
+    -fx-text-fill: #e0e0e0;
+}
+
+.titled-pane > .title {
+    -fx-background-color: #2a2a3c;
+    -fx-background-radius: 6;
+    -fx-border-color: #444460;
+    -fx-border-radius: 6;
+}
+
+.titled-pane > .content {
+    -fx-background-color: transparent;
+}
+
+/* ── 分隔线 ── */
+.separator {
+    -fx-text-fill: #444460;
+}
+
+.separator:horizontal .line {
+    -fx-border-color: #444460;
+}
+
+/* ── 滚动条 ── */
+.scroll-bar {
+    -fx-background-color: #1e1e2e;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #444460;
+    -fx-background-radius: 4;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #5a5a7a;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #9999aa;
+}
+
+/* ── Alert 对话框 ── */
+.alert {
+    -fx-background-color: #2a2a3c;
+}
+
+.alert .label {
+    -fx-text-fill: #e0e0e0;
+}
