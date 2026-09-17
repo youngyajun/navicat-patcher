@@ -1,0 +1,40 @@
+[package]
+name = "navicat-patcher"
+version = "1.0.0"
+description = "Navicat 17.3.x Patcher — egui 纯原生版本（零运行时依赖）"
+authors = ["navicat-patcher"]
+license = "MIT"
+edition = "2021"
+
+# 依赖说明（全部静态编译进 exe，无任何运行时依赖）：
+# - eframe/egui : 纯 Rust 即时模式 GUI（渲染走系统图形驱动，无需安装任何组件）
+# - rfd         : 原生文件/目录对话框（Win32 IFileDialog COM API）
+# - arboard     : 剪贴板（Win32 API）
+# - image       : 仅启用 png 解码，用于窗口图标与标题栏 logo
+# - rsa/rand/base64/serde_json : 核心补丁算法（与 Tauri/Electron 版一致）
+[dependencies]
+eframe = "0.29"
+egui = "0.29"
+rfd = "0.15"
+arboard = "3"
+image = { version = "0.25", default-features = false, features = ["png"] }
+rsa = "0.9"
+rand = "0.8"
+base64 = "0.22"
+# preserve_order：Map 使用 IndexMap，保持 JSON 键插入顺序，
+# 等价 JS JSON.parse / Jackson LinkedHashMap（激活码字段顺序敏感）
+serde_json = { version = "1", features = ["preserve_order"] }
+# 仅用于日志时间戳（本地时区）
+chrono = { version = "0.4", default-features = false, features = ["clock"] }
+
+# Windows exe 图标嵌入（MSVC 资源编译）
+[target.'cfg(windows)'.build-dependencies]
+winres = "0.1"
+
+[profile.release]
+# 体积优先配置
+panic = "abort"     # 去掉 panic 展开代码
+codegen-units = 1   # 单编译单元，更好的优化与去重
+lto = true          # 全程序链接时优化
+opt-level = "s"     # 优化目标：体积
+strip = true        # 去除符号表

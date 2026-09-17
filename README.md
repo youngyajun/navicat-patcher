@@ -1,126 +1,52 @@
+# Navicat Patcher — egui 纯原生版本
+
+`navicat-patcher` 的 **Rust + egui** 纯原生重构版本。**零运行时依赖**：不使用 WebView / WebView2 / 浏览器内核 / JVM / .NET，所有代码静态编译进**单个绿色 exe**，双击即用。
+
+核心补丁逻辑（PE 解析、RSA 密钥运算、四步激活流程）与 Java 版**字节级等价**，界面布局、文案与交互流程逐一对齐。
 
 
-<h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">Navicat 17.3.x Patcher</h1>
-
-
-
-> ## ⚠️ 免责声明
->
-> 本项目仅供**学习、研究和技术交流**使用，严禁用于任何商业用途或非法用途。
->
-> 使用本工具补丁、激活的软件仍需购买正版授权。本项目不对任何因使用本工具而产生的法律责任负责。使用即代表您已阅读并同意本声明。
->
-> 如您代表软件版权方且认为本项目侵犯了您的合法权益，请联系本项目所有者删除。
-
-
-
-![navicat-patcher](data/md/navicat-patcher.png)
-
----
-
-## 适用版本
-
-| 项目 | 说明 |
-|------|------|
-| 软件 | Navicat Premium **17.3.x**（简体中文版） |
-| 测试 | Navicat Premium 17.3.11 中文版 ✅ |
-| 系统 | Windows x64 |
-
----
-
-## 环境准备
-
-| 依赖 | 版本要求 | 说明 |
-|------|---------|------|
-| JDK | 17+ | 推荐Oracle JDK 17+ |
-| JavaFX | 17.0.10 | 已在 `pom.xml` 中声明，编译时自动下载 |
-| Maven | 3.6+ | 用于编译和打包 |
-| Inno Setup | 6.0+ | (可选) 打包 EXE 安装包时需要，[下载地址](https://jrsoftware.org/isdl.php) |
-
-> 从 JDK 11 开始 JavaFX 不再捆绑在 JDK 中，本项目通过 Maven 依赖自动引入，无需单独安装。
-
-### Navicat 下载（Windows平台）
-
-- 官网：			[https://www.navicat.com.cn](https://www.navicat.com.cn)
-- 网盘（可选）：        [Navicat 17.3.11 中文版](https://www.alipan.com/s/JxuduumBbSH)
-
----
-
-## 编译与运行
-
-### 编译	
-
-```bat
-mvn compile
-```
-
-### 打包（生成 Fat JAR）
-
-```bat
-mvn package
-```
-
-打包后生成 `target/navicat-patcher-1.0.0.jar`，包含所有依赖。
-
-### 运行
-
-```bat
-java -jar target/navicat-patcher-1.0.0.jar
-```
-
-> 也可通过 Maven 直接运行（开发阶段）：`mvn javafx:run`
-
----
-
-## 打包为 EXE 安装包
-
-除 JAR 方式外，还支持一键打包为 Windows EXE 安装包，用户安装后**无需安装 Java**即可直接运行。
-
-### 额外依赖
-
-| 依赖 | 版本要求 | 说明 |
-|------|---------|------|
-| Inno Setup | 6.0+ | 用于生成 .exe 安装包，[下载地址](https://jrsoftware.org/isdl.php) |
-
-> 安装 Inno Setup 后，请编辑 `build-exe.bat` 顶部的 `INNO_SETUP_DIR` 变量，将其改为您的实际安装路径（例如 `C:\YYJ\Software\Inno Setup 6`）。留空则自动从系统 PATH 中查找。
->
-> **注意：** `build-exe.bat` 需要用户配置Maven、JDK、Inno Setup安装路径
-
-### 打包方法
-
-双击项目根目录下的 `build-exe.bat`，或在命令行执行：
-
-```bat
-build-exe.bat
-```
-
-脚本会自动完成以下步骤：
-
-1. **检查环境** — 验证 JDK、Maven、jpackage、Inno Setup 是否就绪
-
-2. **构建 JAR** — 执行 `mvn clean package` 生成 Fat JAR
-
-3. **生成安装包** — 调用 `jpackage` 生成 EXE 安装包
-
-打包完成后，安装包位于：
+## 目录结构
 
 ```
-target/exe-installer/NavicatPatcher-1.0.0.exe
+navicat-patcher-egui/
+├── Cargo.toml               # 依赖清单（全部静态编译，无运行时依赖）
+├── build.rs                 # winres：把 icon.ico 嵌入 exe 资源
+├── assets/logo.png          # 标题栏 logo（编译期内嵌）
+├── icons/icon.ico           # exe 图标（资源段嵌入）
+└── src/
+    ├── main.rs              # 入口：窗口 900×680（最小 860×620）
+    ├── app.rs               # 主界面：手风琴四步向导 + 终端日志 + Toast + 错误弹窗
+    ├── theme.rs             # 复古暖色主题/中文字体/图标（米黄画布 + 奶油卡片 + 焦糖橙主色）
+    ├── platform.rs          # 原生对话框(rfd)/剪贴板(arboard)/启动进程
+    └── core/                # 核心算法（与 Tauri 版完全一致，UI 无关）
+        ├── byte_utils.rs    #   字节搜索/小端读写/对齐
+        ├── pe_file.rs       #   PE 解析/加节（纯 Rust，无第三方 PE 库）
+        ├── rsa.rs           #   RSA：密钥生成/PKCS1 解密/私钥 m^d mod n
+        └── patcher.rs       #   四步流程服务（日志回调注入）
 ```
 
-> 安装包内置完整 JRE 运行时，体积约 50-80MB。用户双击即可安装，安装后通过开始菜单或桌面快捷方式启动。
+## 环境要求
 
----
+- **Rust**（MSVC toolchain）：<https://rustup.rs>（需 Visual Studio C++ Build Tools）
+- 无需 Node.js、无需 WebView2、无需任何运行库
 
-## 效果预览
+## 常用命令
 
-![ScreenPage](data/md/ScreenPage.png)
+```bash
+# 开发运行（增量编译 + 热重启）
+cargo run
 
+# 编译检查 / 单元测试（字节工具 + RSA 填充结构验证）
+cargo check
+cargo test
 
+# 发布构建：产物 target/release/navicat-patcher.exe（绿色单文件）
+cargo build --release
+```
 
----
+> ⚠️ 若终端报 `cargo: program not found`，说明该终端在安装 Rust 前打开——重启终端即可。
 
-## 致谢
+## 已知注意事项
 
-- [lihaotong0712/navicat-17.3.x-crack](https://github.com/lihaotong0712/navicat-17.3.x-crack)
-- [Navicat 17 破解教程 - 吾爱破解](https://www.52pojie.cn/thread-2052969-1-1.html)
+- 未签名 exe 可能被 SmartScreen / 杀软误报，根因是工具修改第三方 DLL 的行为本身；如需消除请配置代码签名证书。
+- 中文输入法（IME）在 egui 0.29 的 `TextEdit` 中受支持；若在特殊环境下候选框定位异常，可升级 egui 版本。
