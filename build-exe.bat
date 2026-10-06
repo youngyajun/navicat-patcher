@@ -7,7 +7,7 @@ REM
 REM  Usage: Double-click or run from command line
 REM
 REM  Prerequisites:
-REM    1. JDK 17+ (includes jpackage)
+REM    1. JDK 21+ (includes jpackage)
 REM    2. Maven 3.6+
 REM    3. Inno Setup 6+ (for .exe installer generation)
 REM       Download: https://jrsoftware.org/isdl.php
@@ -101,7 +101,7 @@ if not defined JAVA_HOME_RESOLVED (
     if errorlevel 1 (
         echo   [X] Java not found.
         echo.
-        echo       Download JDK 17+: https://www.oracle.com/java/technologies/downloads/
+        echo       Download JDK 21+: https://www.oracle.com/java/technologies/downloads/
         echo       Then set JAVA_HOME at the top of build-exe.bat or add java to PATH.
         goto :error
     )
@@ -128,10 +128,10 @@ for /f "tokens=1 delims=." %%a in ("!JAVA_VER_STR!") do set "JAVA_MAJOR=%%a"
 if !JAVA_MAJOR! EQU 1 (
     for /f "tokens=2 delims=." %%a in ("!JAVA_VER_STR!") do set "JAVA_MAJOR=%%a"
 )
-if !JAVA_MAJOR! LSS 17 (
-    echo   [X] JDK 17+ required, current: !JAVA_VER_STR!
+if !JAVA_MAJOR! LSS 21 (
+    echo   [X] JDK 21+ required, current: !JAVA_VER_STR!
     echo.
-    echo       Download JDK 17+: https://www.oracle.com/java/technologies/downloads/
+    echo       Download JDK 21+: https://www.oracle.com/java/technologies/downloads/
     goto :error
 )
 if defined JAVA_HOME_RESOLVED (

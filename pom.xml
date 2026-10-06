@@ -11,21 +11,99 @@
     <name>Navicat Patcher</name>
 
     <properties>
-        <maven.compiler.release>17</maven.compiler.release>
-        <javafx.version>17.0.10</javafx.version>
+        <maven.compiler.release>21</maven.compiler.release>
+        <javafx.version>21.0.2</javafx.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- JavaFX 原生库平台分类器, 默认 win (本项目面向 Windows x64);
+             非 Windows 平台由下方 profile 按 os-maven-plugin 探测结果自动覆盖,
+             保证 clone 后 mvn 自动下载对应平台的 JavaFX 运行时, 无需手工安装 -->
+        <javafx.platform>win</javafx.platform>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>javafx-natives-macos-x86_64</id>
+            <activation>
+                <property>
+                    <name>os.detected.classifier</name>
+                    <value>mac-x86_64</value>
+                </property>
+            </activation>
+            <properties>
+                <javafx.platform>mac</javafx.platform>
+            </properties>
+        </profile>
+        <profile>
+            <id>javafx-natives-macos-aarch64</id>
+            <activation>
+                <property>
+                    <name>os.detected.classifier</name>
+                    <value>mac-aarch64</value>
+                </property>
+            </activation>
+            <properties>
+                <javafx.platform>mac-aarch64</javafx.platform>
+            </properties>
+        </profile>
+        <profile>
+            <id>javafx-natives-linux-x86_64</id>
+            <activation>
+                <property>
+                    <name>os.detected.classifier</name>
+                    <value>linux-x86_64</value>
+                </property>
+            </activation>
+            <properties>
+                <javafx.platform>linux</javafx.platform>
+            </properties>
+        </profile>
+        <profile>
+            <id>javafx-natives-linux-aarch64</id>
+            <activation>
+                <property>
+                    <name>os.detected.classifier</name>
+                    <value>linux-aarch_64</value>
+                </property>
+            </activation>
+            <properties>
+                <javafx.platform>linux-aarch64</javafx.platform>
+            </properties>
+        </profile>
+    </profiles>
+
     <dependencies>
-        <!-- JavaFX Controls -->
+        <!-- JavaFX (Maven 主 jar + 平台原生 jar 均需 classifier 才能拿到 dll/so) -->
         <dependency>
             <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
+            <artifactId>javafx-base</artifactId>
+            <version>${javafx.version}</version>
+            <classifier>${javafx.platform}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
             <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-graphics</artifactId>
+            <version>${javafx.version}</version>
+            <classifier>${javafx.platform}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+            <classifier>${javafx.platform}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
             <version>${javafx.version}</version>
         </dependency>
         <!-- Jackson for JSON -->

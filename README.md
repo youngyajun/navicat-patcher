@@ -32,12 +32,14 @@
 
 | 依赖 | 版本要求 | 说明 |
 |------|---------|------|
-| JDK | 17+ | 推荐Oracle JDK 17+ |
-| JavaFX | 17.0.10 | 已在 `pom.xml` 中声明，编译时自动下载 |
+| JDK | 21+ | 推荐Oracle JDK 21+ |
+| JavaFX | 21.0.2 | 已在 `pom.xml` 中声明平台 classifier，Maven 自动下载对应平台的运行时（含原生 dll），无需单独安装 JavaFX SDK |
 | Maven | 3.6+ | 用于编译和打包 |
 | Inno Setup | 6.0+ | (可选) 打包 EXE 安装包时需要，[下载地址](https://jrsoftware.org/isdl.php) |
 
 > 从 JDK 11 开始 JavaFX 不再捆绑在 JDK 中，本项目通过 Maven 依赖自动引入，无需单独安装。
+>
+> `pom.xml` 中 JavaFX 依赖通过 `os-maven-plugin` 按当前操作系统自动选择平台 classifier（Windows 为 `win`，macOS/Linux 由 profile 自动覆盖），clone 项目后执行 `mvn compile` 即可自动下载所需组件；在 IDE 中打开项目时重新加载 Maven 工程即可同步依赖。
 
 ### Navicat 下载（Windows平台）
 
